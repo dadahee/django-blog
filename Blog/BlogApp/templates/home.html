@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- 위 3개의 메타 태그는 *반드시* head 태그의 처음에 와야합니다; 어떤 다른 콘텐츠들은 반드시 이 태그들 *다음에* 와야 합니다 -->
+    <title>LikeLion8th : Blog Project</title>
+
+    <!-- 부트스트랩 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <style>
+        body {
+            background-color: white;
+        }
+        
+        .row {
+            padding: 1rem 0;
+            border-bottom-color: lightgray;
+            border-bottom-style: dashed;
+        }
+        
+        .table {
+            table-layout: fixed;
+            overflow: hidden;
+        }
+        
+        .photo {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .container {
+            padding: 0;
+        }
+        
+        .jumbotron {
+            padding: 2rem 0;
+            margin: 0;
+        }
+        
+        .list {
+            padding: 0 0 2rem 0;
+        }
+        
+        #main-banner {
+            padding: 0 0 1rem 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 내용 -->
+    <div class="wrapper">
+
+        <!-- 메인 배너 -->
+        <section class="jumbotron text-center">
+            <div class="container">
+                {% load static %}
+                <img src="{% static '4.jpg'%}" id="main-banner">
+                <h1>Blog Project</h1>
+                <p class="lead text-muted">LikeLion Assignment : 20181575 구다희</p>
+                <a href="{%url 'new'%}" class="btn btn-primary">새 글 작성하기</a>
+            </div>
+        </section>
+
+        <!-- 글 목록 -->
+        <section class="list ">
+            <div class="container">
+                <table class='table table-borderless'>
+                    {% for blog in blogs %}
+                    <tr class="row row-xs-5 row-md-5 post">
+                        <td class="col-xs-6 col-md-3 photobox">
+                            <img class="photo" src="{{ blog.img.url }}">
+                        </td>
+                        <td class="col-xs-6 col-md-9 textbox">
+                            <h3>{{blog.title}}</h3>
+                            <p>{{blog.date}}</p>
+                            <p>{{blog.summary}}</p>
+                            <div class="btn-group " style="text-align: right; ">
+                                <a href="{%url 'detail' blog.id %} " class="btn btn-sm btn-dark " type="button ">더 보기</a>
+                                <a href="{%url 'edit' blog.id %} " class="btn btn-sm btn-outline-dark " type="button ">수정하기</a>
+                                <a id="{{blog.id}}" class="del-btn btn btn-sm btn-outline-dark " type="button " style="border-left: none;" data-target="#del-alert" data-toggle="modal ">삭제하기</a>
+                                <a href="{% url 'delete' blog.id %}" style="display: none;"></a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </section>
+    </div>
+    <!-- 모달 영역 -->
+    <div id="del-alert" class="modal fade" tabindex="-1 " role="dialog" aria-labelledby="myModalLabel" aria-hidden="true ">
+        <div class="modal-dialog ">
+            <div class="modal-content ">
+                <div class="modal-header ">
+                    <h5 class="modal-title ">알림</h5>
+                    <button class="close " type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">X</span></button>
+                </div>
+                <div class="modal-body ">정말 삭제하시게요?</div>
+                <div class="modal-footer ">
+                    <button id="modalY" class="btn btn-dark" type="button">예</button>
+                    <button class="btn btn-outline-dark" type="button" data-dismiss="modal">아니요</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js " integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj " crossorigin="anonymous "></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js " integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo " crossorigin="anonymous "></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js " integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI " crossorigin="anonymous "></script>
+    <script>
+        $(document).ready(function() {
+            $('.del-btn').click(function(e) {
+                var del_link = $(this).parent().children().last();
+                del_link.text('hi');
+                $('#del-alert').modal('show');
+                $('#modalY').click(function() {
+                    del_link.get(0).click();
+                });
+            });
+
+        });
+    </script>
+</body>
+
+</html>
