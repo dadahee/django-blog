@@ -70,6 +70,17 @@
         <!-- 글 목록 -->
         <section class="list ">
             <div class="container">
+
+                <div>
+                    {% if user.is_authenticated %}
+                    <h3>안녕하세요. {{ user.username }}님!</h3>
+                    <a href="{% url 'logout' %}">로그아웃</a> {% else %}
+                    <a href="{% url 'login' %}">로그인</a>
+                    <a href="{% url 'register' %}">회원가입</a> {% endif %}
+
+                </div>
+
+
                 <table class='table table-borderless'>
                     {% for blog in blogs %}
                     <tr class="row row-xs-5 row-md-5 post">
