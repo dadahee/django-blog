@@ -46,6 +46,18 @@
             padding: 0 0 2rem 0;
         }
         
+        .profile {
+            max-width: 70%;
+            height: auto;
+            padding: auto;
+        }
+        
+        .title {
+            text-align: center;
+            margin: auto;
+            width: 50%;
+        }
+        
         #main-banner {
             padding: 0 0 1rem 0;
         }
@@ -59,63 +71,69 @@
         <!-- 메인 배너 -->
         <section class="jumbotron text-center">
             <div class="container">
-                {% load static %}
-                <img src="{% static '4.jpg'%}" id="main-banner">
-                <h1>Blog Project</h1>
-                <p class="lead text-muted">LikeLion Assignment : 20181575 구다희</p>
-                <a href="{%url 'new'%}" class="btn btn-primary">새 글 작성하기</a>
-            </div>
-        </section>
-
-        <!-- 글 목록 -->
-        <section class="list ">
-            <div class="container">
-
-                <div>
-                    {% if user.is_authenticated %}
-                    <h3>안녕하세요. {{ user.username }}님!</h3>
-                    <a href="{% url 'logout' %}">로그아웃</a> {% else %}
-                    <a href="{% url 'login' %}">로그인</a>
-                    <a href="{% url 'register' %}">회원가입</a> {% endif %}
-
+                <div class="title">
+                    {% load static %} {% if not user.is_authenticated or not user.profile %}
+                    <img src="{% static '4.jpg'%} " id="main-banner "> {% else %}
+                    <img class="profile" src="{{ user.profile.url }} "> {% endif %}
+                    <h1>Blog Project</h1>
+                    <p class="lead text-muted ">LikeLion Assignment : 20181575 구다희</p>
                 </div>
-
-
-                <table class='table table-borderless'>
-                    {% for blog in blogs %}
-                    <tr class="row row-xs-5 row-md-5 post">
-                        <td class="col-xs-6 col-md-3 photobox">
-                            <img class="photo" src="{{ blog.img.url }}">
-                        </td>
-                        <td class="col-xs-6 col-md-9 textbox">
-                            <h3>{{blog.title}}</h3>
-                            <p>{{blog.date}}</p>
-                            <p>{{blog.summary}}</p>
-                            <div class="btn-group " style="text-align: right; ">
-                                <a href="{%url 'detail' blog.id %} " class="btn btn-sm btn-dark " type="button ">더 보기</a>
-                                <a href="{%url 'edit' blog.id %} " class="btn btn-sm btn-outline-dark " type="button ">수정하기</a>
-                                <a id="{{blog.id}}" class="del-btn btn btn-sm btn-outline-dark " type="button " style="border-left: none;" data-target="#del-alert" data-toggle="modal ">삭제하기</a>
-                                <a href="{% url 'delete' blog.id %}" style="display: none;"></a>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
+                <div class="user-info ">
+                    {% if user.is_authenticated %}
+                    <div class="user-authenticated">
+                        <div class="btn btn-outline-primary btn-sm">안녕하세요. {{ user.username }}님!</div>
+                        <a href="{%url 'new'%} " class="btn btn-primary btn-sm ">새 글 작성하기</a>
+                        <a href="{% url 'logout'%}" class="btn btn-primary btn-sm">로그아웃</a>
+                    </div>
+                    {% else %}
+                    <div class="user-none">
+                        <a href="{% url 'login'%}" class="btn btn-primary btn-sm">로그인</a>
+                        <a href="{% url 'register' %}" class="btn btn-outline-primary btn-sm">회원가입</a>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
-        </section>
+    </div>
+    </section>
+
+    <!-- 글 목록 -->
+    <section class="list ">
+        <div class="container ">
+            <table class='table table-borderless'>
+                {% for blog in blogs %}
+                <tr class="row row-xs-5 row-md-5 post ">
+                    <td class="col-xs-6 col-md-3 photobox ">
+                        <img class="photo " src="{{ blog.img.url }} ">
+                    </td>
+                    <td class="col-xs-6 col-md-9 textbox ">
+                        <h3>{{blog.title}}</h3>
+                        <p>{{blog.date}}</p>
+                        <p>{{blog.summary}}</p>
+                        <div class="btn-group " style="text-align: right; ">
+                            <a href="{%url 'detail' blog.id %} " class="btn btn-sm btn-dark " type="button ">더 보기</a>
+                            <a href="{%url 'edit' blog.id %} " class="btn btn-sm btn-outline-dark " type="button ">수정하기</a>
+                            <a id="{{blog.id}} " class="del-btn btn btn-sm btn-outline-dark " type="button " style="border-left: none; " data-target="#del-alert " data-toggle="modal ">삭제하기</a>
+                            <a href="{% url 'delete' blog.id %} " style="display: none; "></a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </section>
     </div>
     <!-- 모달 영역 -->
-    <div id="del-alert" class="modal fade" tabindex="-1 " role="dialog" aria-labelledby="myModalLabel" aria-hidden="true ">
+    <div id="del-alert " class="modal fade " tabindex="-1 " role="dialog " aria-labelledby="myModalLabel " aria-hidden="true ">
         <div class="modal-dialog ">
             <div class="modal-content ">
                 <div class="modal-header ">
                     <h5 class="modal-title ">알림</h5>
-                    <button class="close " type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">X</span></button>
+                    <button class="close " type="button " data-dismiss="modal " aria-label="Close "><span aria-hidden="true ">X</span></button>
                 </div>
                 <div class="modal-body ">정말 삭제하시게요?</div>
                 <div class="modal-footer ">
-                    <button id="modalY" class="btn btn-dark" type="button">예</button>
-                    <button class="btn btn-outline-dark" type="button" data-dismiss="modal">아니요</button>
+                    <button id="modalY " class="btn btn-dark " type="button ">예</button>
+                    <button class="btn btn-outline-dark " type="button " data-dismiss="modal ">아니요</button>
                 </div>
             </div>
         </div>

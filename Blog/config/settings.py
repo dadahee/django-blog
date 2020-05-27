@@ -129,3 +129,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static') #static 파일을 한 곳에 모�
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') #media 파일을 저장되는 위치
 MEDIA_URL = '/media/' # 미디어 파일 요청 받을 url 주소
 # media는 모아줄 필요 x -> 명령어 작성 필요 x
+
+AUTH_USER_MODEL = "account.CustomUserModel"
