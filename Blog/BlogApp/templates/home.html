@@ -81,7 +81,7 @@
                 <div class="user-info ">
                     {% if user.is_authenticated %}
                     <div class="user-authenticated">
-                        <div class="btn btn-outline-primary btn-sm">안녕하세요. {{ user.username }}님!</div>
+                        <div class="btn btn-outline-primary btn-sm disabled">안녕하세요. <span class="h6">{{ user.username }}</span>님!</div>
                         <a href="{%url 'new'%} " class="btn btn-primary btn-sm ">새 글 작성하기</a>
                         <a href="{% url 'logout'%}" class="btn btn-primary btn-sm">로그아웃</a>
                     </div>
@@ -107,13 +107,16 @@
                     </td>
                     <td class="col-xs-6 col-md-9 textbox ">
                         <h3>{{blog.title}}</h3>
-                        <p>{{blog.date}}</p>
+                        <p><span class="h6 mr-2">{{  blog.writer }}</span>/<span class="ml-2">{{blog.date|date:'Y-m-d h:i A' }}</span></p>
                         <p>{{blog.summary}}</p>
-                        <div class="btn-group " style="text-align: right; ">
+                        <div class="btn-group mt-3" style="text-align: right; ">
                             <a href="{%url 'detail' blog.id %} " class="btn btn-sm btn-dark " type="button ">더 보기</a>
+
+                            {% if request.user == blog.writer %}
                             <a href="{%url 'edit' blog.id %} " class="btn btn-sm btn-outline-dark " type="button ">수정하기</a>
                             <a id="{{blog.id}} " class="del-btn btn btn-sm btn-outline-dark " type="button " style="border-left: none; " data-target="#del-alert " data-toggle="modal ">삭제하기</a>
                             <a href="{% url 'delete' blog.id %} " style="display: none; "></a>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>

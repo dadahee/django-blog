@@ -25,8 +25,8 @@
         <div class="container">
 
             <section role="header">
-                <h1 style="font-weight: h6;">{{ blog.title }}</h1>
-                <h4>{{ blog.date }}</h4>
+                <h1 class="text-primary">{{ blog.title }}</h1>
+                <span class="pr-3 h5">{{ blog.writer }}</span>/<span class="pl-3 h5">{{ blog.date|date:'Y-m-d h:i A' }}</span>
                 <hr>
             </section>
             <section role="detail">
@@ -44,7 +44,7 @@
                 {% endif %}
             </div>
 
-            <div role="like">
+            <div role="like-wrapper" class="mt-3 mb-4">
                 <!-- 좋아요 출력 -->
                 {% if user.is_authenticated %}
                     <!-- 좋아요 취소-->
@@ -52,10 +52,10 @@
                         <form action="{% url 'like' blog.id %}" method="POST">
                             {% csrf_token %}
                             <div class="btn-toolbar">
-                                <div class="btn-group mt-3 mb-3 mr-3">
+                                <div class="btn-group mr-3">
                                     <a class="btn btn-outline-dark" href="{%url 'home' %}">홈으로 이동</a>
                                 </div>
-                                <div class="btn-group mt-3 mb-3">
+                                <div class="btn-group">
                                     <span class="btn btn-danger"> ♥ </span>
                                     {% if likers|length > 1 %}
                                         <span class="btn btn-outline-danger text-danger disabled"><span class="h6">{{ likers|first  }}</span> 외 <span class="h6">{{ likers|length|add:"-1" }} 명</span></span>
@@ -70,10 +70,10 @@
                     {% else %}
                         <form action="{% url 'like' blog.id %}" method="GET">
                             <div class="btn-toolbar">
-                                <div class="btn-group mt-3 mb-3 mr-3">
+                                <div class="btn-group mr-3">
                                     <a class="btn btn-outline-dark" href="{%url 'home' %}">홈으로 이동</a>
                                 </div>
-                                <div class="btn-group mt-3 mb-3">
+                                <div class="btn-group">
                                     <span class="btn btn-danger"> ♥ </span>
                                     {% if likers|length > 1 %}
                                         <span class="btn btn-outline-danger text-danger disabled"><span class="h6">{{ likers|first  }}</span> 외 <span class="h6">{{ likers|length|add:"-1" }} 명</span></span>
@@ -85,6 +85,8 @@
                             </div>
                         </form>
                     {% endif %}
+                {% else %}
+                    <a class="btn btn-outline-dark" href="{%url 'home' %}">홈으로 이동</a>
                 {% endif %}
             </div>
 
@@ -93,11 +95,11 @@
             <section role="comments">
                 <!-- 덧글 출력 -->
                 <div>
-                    <div class="h4 text-primary mt-5 mb-4">덧글</div>
+                    <div class="h4 text-primary mt-4 mb-4">덧글</div>
                     {% for comment in comments %}
                         <div class="comment-wrapper border-bottom mt-3 pb-3">
                             <div class="comment-box row">
-                                <div class="col-sm-8 border-right">
+                                <div class="col-sm-8">
                                     <div role="comment-info">
                                         <span class="h5 mr-3">{{ comment.author.username }}</span>
                                         {{ comment.date|date:'Y-m-d h:i A' }}
