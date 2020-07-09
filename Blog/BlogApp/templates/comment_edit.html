@@ -1,0 +1,54 @@
+{% extends 'detail.html' %}
+
+{% block comment_section %}
+
+<!-- 덧글 출력 -->
+<div>
+    <div class="h4 text-primary mt-4 mb-4">{{ comments.count }} Comments </div>
+    {% for comment in comments %}
+        <div class="comment-wrapper border-bottom mt-3 pb-3">
+            <div class="comment-box row">
+                {% if comment == edit_comment %}
+                    <div class="col-sm-12">
+                        <div role="comment-info">
+                            <span class="h5 mr-3">{{ comment.author.username }}</span>
+                        </div>
+                        <div>
+                            <form  action="{% url 'edit_comment' edit_comment.id %}" method="POST" class="form-horizontal">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <div class="form-inline">
+                                        <textarea name="text" class="form-control col-sm-8 mr-3" rows="2" id="comment_input">{{ edit_comment.text }}</textarea>
+                                        <button type="submit" class="btn btn-primary btn-lg col-sm-2">수정</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-sm-8">
+                        <div role="comment-info">
+                            <span class="h5 mr-3">{{ comment.author.username }}</span>
+                            {{ comment.date|date:'Y-m-d h:i A' }}
+                        </div>
+                        <div>
+                            {{ comment.text }}
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <!-- 덧글 작성자와 로그인한 사용자가 일치할 경우 수정, 삭제 버튼 노출 -->
+                        {% if user.is_authenticated and comment.author.username == request.user.username %}            
+                            <!-- 댓글 수정 버튼 -->
+                            <a class="text-info mr-3" href="{% url 'edit_comment' comment.id %}">수정</a>
+                            <!-- 댓글 삭제 버튼 -->
+                            <a class="text-info" href="{% url 'del_comment' comment.id %}">삭제</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

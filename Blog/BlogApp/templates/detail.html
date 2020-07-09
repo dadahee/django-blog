@@ -1,148 +1,49 @@
-<!DOCTYPE html>
-<html lang="ko">
+{% extends 'post.html' %}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- 부트스트랩 -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-
-    <title>{{ blog.title }}</title>
-    <style>
-        .container {
-            padding: 3rem 0;
-        }
-        
-        .photo {
-            padding: 2rem 0;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="wrapper">
-        <div class="container">
-
-            <section role="header">
-                <h1 class="text-primary">{{ blog.title }}</h1>
-                <span class="pr-3 h5">{{ blog.writer }}</span>/<span class="pl-3 h5">{{ blog.date|date:'Y-m-d h:i A' }}</span>
-                <hr>
-            </section>
-            <section role="detail">
-                <img class="photo" src="{{ blog.img.url }}">
-                <div class="content">{{ blog.text }}
+{% block comment_section %}
+<!-- 덧글 출력 -->
+<div>
+    <div class="h4 text-primary mt-4 mb-4">{{ comments.count }} Comments</div>
+    {% for comment in comments %}
+        <div class="comment-wrapper border-bottom mt-3 pb-3">
+            <div class="comment-box row">
+                <div class="col-sm-8">
+                    <div role="comment-info">
+                        <span class="h5 mr-3">{{ comment.author.username }}</span>
+                        {{ comment.date|date:'Y-m-d h:i A' }}
+                    </div>
+                    <div>
+                        {{ comment.text }}
+                    </div>
                 </div>
-                <br><br>
-            </section>
-           
-
-            <div role="others">
-                {% if user.is_authenticated and blog.username == request.user.username %}
-                    <a class="btn btn-outline-dark" href="{%url 'edit' blog.id %}">수정하기</a>
-                    <a class="btn btn-outline-dark" href="{%url 'delete' blog.id %}">삭제하기</a>
-                {% endif %}
-            </div>
-
-            <div role="like-wrapper" class="mt-3 mb-4">
-                <!-- 좋아요 출력 -->
-                {% if user.is_authenticated %}
-                    <!-- 좋아요 취소-->
-                    {% if user in likers %}
-                        <form action="{% url 'like' blog.id %}" method="POST">
-                            {% csrf_token %}
-                            <div class="btn-toolbar">
-                                <div class="btn-group mr-3">
-                                    <a class="btn btn-outline-dark" href="{%url 'home' %}">홈으로 이동</a>
-                                </div>
-                                <div class="btn-group">
-                                    <span class="btn btn-danger"> ♥ </span>
-                                    {% if likers|length > 1 %}
-                                        <span class="btn btn-outline-danger text-danger disabled"><span class="h6">{{ likers|first  }}</span> 외 <span class="h6">{{ likers|length|add:"-1" }} 명</span></span>
-                                    {% else %}
-                                        <span class="btn btn-outline-danger text-danger disabled">{{ likers|length }}</span>
-                                    {% endif %}
-                                    <button type="submit" class="btn btn-secondary">좋아요 취소</button>
-                                </div>
-                            </div>
-                        </form>
-                    <!-- 좋아요 추가 -->
-                    {% else %}
-                        <form action="{% url 'like' blog.id %}" method="GET">
-                            <div class="btn-toolbar">
-                                <div class="btn-group mr-3">
-                                    <a class="btn btn-outline-dark" href="{%url 'home' %}">홈으로 이동</a>
-                                </div>
-                                <div class="btn-group">
-                                    <span class="btn btn-danger"> ♥ </span>
-                                    {% if likers|length > 1 %}
-                                        <span class="btn btn-outline-danger text-danger disabled"><span class="h6">{{ likers|first  }}</span> 외 <span class="h6">{{ likers|length|add:"-1" }} 명</span></span>
-                                    {% else %}
-                                        <span class="btn btn-outline-danger text-danger disabled">{{ likers|length }}</span>
-                                    {% endif %}
-                                    <button type="submit" class="btn btn-dark">좋아요</button>
-                                </div>
-                            </div>
-                        </form>
+                <div class="col-sm-2">
+                    <!-- 덧글 작성자와 로그인한 사용자가 일치할 경우 수정, 삭제 버튼 노출 -->
+                    {% if user.is_authenticated and comment.author.username == request.user.username %}
+                        <!-- 댓글 수정 -->
+                        <a class="text-info mr-3" href="{% url 'edit_comment' comment.id %}">수정</a>
+                        <!-- 댓글 삭제 -->
+                        <a class="text-info" href="{% url 'del_comment' comment.id %}">삭제</a>
                     {% endif %}
-                {% else %}
-                    <a class="btn btn-outline-dark" href="{%url 'home' %}">홈으로 이동</a>
-                {% endif %}
+                </div>
             </div>
-
-            <hr>
-
-            <section role="comments">
-                <!-- 덧글 출력 -->
-                <div>
-                    <div class="h4 text-primary mt-4 mb-4">덧글</div>
-                    {% for comment in comments %}
-                        <div class="comment-wrapper border-bottom mt-3 pb-3">
-                            <div class="comment-box row">
-                                <div class="col-sm-8">
-                                    <div role="comment-info">
-                                        <span class="h5 mr-3">{{ comment.author.username }}</span>
-                                        {{ comment.date|date:'Y-m-d h:i A' }}
-                                    </div>
-                                    <div>
-                                        {{ comment.text }}
-                                    </div>
-                                </div>
-                                <div class="col-sm-2">
-                                    <!-- 덧글 작성자와 로그인한 사용자가 일치할 경우 수정, 삭제 버튼 노출 -->
-                                    {% if user.is_authenticated and comment.author.username == request.user.username %}
-                                        <!-- 댓글 수정 -->
-                                        <a class="text-info mr-3" href="{% url 'edit_comment' comment.id %}">수정</a>
-                                        <!-- 댓글 삭제 -->
-                                        <a class="text-info" href="{% url 'del_comment' comment.id %}">삭제</a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-
-                {% if user.is_authenticated %}
-                <div class="mt-5 mb-3">
-                    <!-- 댓글 작성 -->
-                    <form  action="{% url 'new_comment' blog.id %}" method="POST" class="form-horizontal">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="comment_input" class="control-label h5"><span class="text-primary">{{ request.user.username }}</span>님의 덧글</label>
-                            <div class="form-inline">
-                                <textarea name="text" class="form-control col-sm-8 mr-3" rows="2" placeholder="덧글을 입력하세요 (200자 제한)" id="comment_input"></textarea>
-                                <button type="submit" class="btn btn-primary btn-lg col-sm-2">작성</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                {% endif %}
-            </section>
         </div>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-</body>
+    {% endfor %}
+</div>
 
-</html>
+{% if user.is_authenticated %}
+<div class="mt-5 mb-3">
+    <!-- 댓글 작성 -->
+    <form  action="{% url 'new_comment' blog.id %}" method="POST" class="form-horizontal">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="comment_input" class="control-label h5"><span class="text-primary">{{ request.user.username }}</span>님의 덧글</label>
+            <div class="form-inline">
+                <textarea name="text" class="form-control col-sm-8 mr-3" rows="2" placeholder="덧글을 입력하세요 (200자 제한)" id="comment_input"></textarea>
+                <button type="submit" class="btn btn-primary btn-lg col-sm-2">작성</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endif %}
+
+{% endblock %}

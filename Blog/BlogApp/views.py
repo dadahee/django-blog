@@ -66,14 +66,17 @@ def new_comment(request, blog_id):
     return redirect('detail', blog_id)
 
 def edit_comment(request, comment_id):
-    comment = get_object_or_404(Comment, pk=comment_id)
-    blog_id = comment.blog
+    edit_comment = get_object_or_404(Comment, pk=comment_id)
+    blog_id = edit_comment.blog.id
     if request.method == "GET":
-        pass
+        blog = get_object_or_404(Blog, pk=blog_id)
+        comments = Comment.objects.filter(blog=blog)
+        likers = blog.like.all()
+        return render(request, 'comment_edit.html', { 'blog': blog, 'comments': comments, 'likers': likers, 'edit_comment': edit_comment })
     else:
-        comment.text = request.POST.get('text')
-        comment.save()
-    return redirect('detail', blog_id)
+        edit_comment.text = request.POST.get('text')
+        edit_comment.save()
+        return redirect('detail', blog_id)
 
 def del_comment(request, comment_id):
     del_comment = get_object_or_404(Comment, pk=comment_id)
